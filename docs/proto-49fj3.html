@@ -15,23 +15,7 @@
 <body>
   <div class="box">
     <h2>プロトタイプ閲覧用</h2>
-    <p>パスワードを入力してください：</p>
-    <input type="password" id="pw" placeholder="Password">
-    <br>
-    <button onclick="checkPw()">Enter</button>
-    <p id="msg"></p>
-  </div>
+    <p>テスト画面</p>
 
-  <script>
-    function checkPw() {
-      const input = document.getElementById("pw").value;
-      const correct = "Ol-JG2025"; // ← 審査員に伝える共通パスワード
-      if (input === correct) {
-        window.location.href = "proto-49fj3.html"; // ← ランダム文字列に変更
-      } else {
-        document.getElementById("msg").textContent = "パスワードが違います。";
-      }
-    }
-  </script>
 </body>
 </html>
