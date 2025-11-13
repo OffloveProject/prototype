@@ -34,6 +34,12 @@ body.modal-open .modal * {
   --sky:#C8E4FF;            /* 淡い水色 */
 }
 
+/* 立ち絵画像が未設定 or src="" のときは完全に非表示 （スマホのブラウザ用） */
+#char-img:not([src]),
+#char-img[src=""] {
+  display: none;
+}
+
 /* ===== Tap Effect ===== ↓↓↓ここから*/
 .tap-effect {
   position: absolute;
