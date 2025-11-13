@@ -1002,6 +1002,7 @@ textarea{width:100%;height:120px;border-radius:10px;border:1px solid #2c2c2c;bac
 /* About & Legal：リンクの視認性UP（チップ風）↓↓↓ここから */
 #about-modal .modal-card a{
   display: inline-flex;
+  flex-direction: row;
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
@@ -1045,6 +1046,12 @@ textarea{width:100%;height:120px;border-radius:10px;border:1px solid #2c2c2c;bac
 #about-modal .modal-card p > strong{
   opacity: .95;
   margin-right: 6px;
+}
+
+#about-modal .modal-body {
+  overflow-y: auto;
+  max-height: calc(86svh - 90px); /* 上部タイトル + 下部ボタン分 */
+  padding-right: 6px;              /* スクロールバー余白 */
 }
 /* About & Legal：リンクの視認性UP（チップ風） ↑↑↑ここまで*/
 

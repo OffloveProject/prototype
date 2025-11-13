@@ -340,24 +340,26 @@
 <div id="about-modal" class="modal hidden">
   <div class="modal-card">
     <h3 style="margin-top:0;">About & Legal</h3>
-    <div class="subtitle" id="app-version">Version: v0.1.0 (Demo)</div>
-    <hr/>
-    <p><strong>作品名：</strong>Offstage Love　〜秘密の恋と夢のはざまで〜</p>
-    <p><strong>開発：</strong>Offstage Love Project</p>
-    <p><strong>連絡先：</strong><a href="mailto:info@offstagelove.com">info@offstagelove.com</a></p>
-    <p><strong>公式サイト：</strong>
-      <a href="https://offstagelove.com" target="_blank" rel="noopener">
-        https://offstagelove.com
-      </a>
-    </p>
-    <hr/>
-    <p><strong>データの扱い：</strong>本デモはブラウザの <code>localStorage</code> のみを使用し、個人データをサーバに送信しません。</p>
-    <p class="subtitle">※Analytics等を導入する場合は、その旨と目的・取得項目・オプトアウト方法をここに明記</p>
-    <hr/>
-    <p><a id="link-privacy" href="https://offstagelove.com/app/privacypolicy.html" target="_blank" rel="noopener">プライバシーポリシー</a></p>
-    <p><a id="link-tos" href="https://offstagelove.com/app/termsofservice.html" target="_blank" rel="noopener">利用規約</a></p>
-    <div class="row" style="margin-top:12px;">
-      <button id="btn-about-close" class="btn">閉じる</button>
+    <div class="modal-body">
+      <div class="subtitle" id="app-version">Version: v0.1.0 (Demo)</div>
+      <hr/>
+      <p><strong>作品名：</strong>Offstage Love　〜秘密の恋と夢のはざまで〜</p>
+      <p><strong>開発：</strong>Offstage Love Project</p>
+      <p><strong>連絡先：</strong><a href="mailto:info@offstagelove.com">info@offstagelove.com</a></p>
+      <p><strong>公式サイト：</strong>
+        <a href="https://offstagelove.com" target="_blank" rel="noopener">
+          https://offstagelove.com
+        </a>
+      </p>
+      <hr/>
+      <p><strong>データの扱い：</strong>本デモはブラウザの <code>localStorage</code> のみを使用し、個人データをサーバに送信しません。</p>
+      <p class="subtitle">※Analytics等を導入する場合は、その旨と目的・取得項目・オプトアウト方法をここに明記</p>
+      <hr/>
+      <p><a id="link-privacy" href="https://offstagelove.com/app/privacypolicy.html" target="_blank" rel="noopener">プライバシーポリシー</a></p>
+      <p><a id="link-tos" href="https://offstagelove.com/app/termsofservice.html" target="_blank" rel="noopener">利用規約</a></p>
+      <div class="row" style="margin-top:12px;">
+        <button id="btn-about-close" class="btn">閉じる</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1609,6 +1611,18 @@ function renderCurrent() {
   const btnNext = el("btn-next") || el("btn-go");  // ← 追加
   const choices = el("choices");
   const backBtn = el("btn-backline");
+
+  // ★追加：最初のシーンの1ページ目では必ず戻る禁止にする↓↓↓ここから
+  //  ・sceneId が prologue_studio
+  //  ・カーソルが 0 行目
+  //  ・まだ履歴が空（＝ゲーム開始直後）
+  if (state.sceneId === "prologue_studio" &&
+      state.cursor === 0 &&
+      state.history.length === 0) {
+    state.backLockAt = 0;
+  }
+  // ★追加：最初のシーンの1ページ目では必ず戻る禁止にする↑↑↑ここまで
+
   // ロック中は戻れない → 無効化（非表示にしたければ hidden をトグル）
   const lock = (state.backLockAt != null && state.cursor === state.backLockAt);
   backBtn.disabled = lock;
