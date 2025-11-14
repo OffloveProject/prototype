@@ -2274,6 +2274,7 @@ const TRACKS = [
 
 let currentTrackIndex = 0;      // 仮想的な「再生中の曲」
 let currentPlayMode   = "normal"; // "normal" | "shuffle" | "one" | "all"
+let hasTrackSelection = false;    // 曲リストに「選択中」があるか
 
 //現在再生中の曲情報を更新↓↓↓ここから
 function updateNowPlayingUI() {
@@ -2304,21 +2305,22 @@ function highlightCurrentTrack() {
   const rows = document.querySelectorAll(".track-row");
 
   rows.forEach((row, i) => {
-    row.classList.toggle("is-active", i === currentTrackIndex);
+    const active = hasTrackSelection && i === currentTrackIndex;
+
+    row.classList.toggle("is-active", active);
 
     // ▶ ボタンの光り方
     const btn = row.querySelector(".track-play-btn");
-    btn.classList.toggle("is-playing", i === currentTrackIndex);
 
     // 波紋アニメの対象
     const wave = row.querySelector(".track-wave");
 
-    if (i === currentTrackIndex) {
-      wave.classList.add("show");
-      wave.classList.add("pulsing");
+    if (btn)  btn.classList.toggle("is-playing", active);
+
+    if (wave) {
+      wave.classList.add("show", "pulsing");
     } else {
-      wave.classList.remove("show");
-      wave.classList.remove("pulsing");
+      wave.classList.remove("show", "pulsing");
     }
   });
 }
@@ -2390,10 +2392,19 @@ function attachTrackUIEvents() {
         // ▶ → ❚❚
         if (now === "▶") {
           npToggle.textContent = "❚❚";
-        }
+
+            // ★追加：初回再生時にリスト側も選択状態にする
+            if (!hasTrackSelection) {
+              hasTrackSelection = true;
+              // currentTrackIndex は 0 初期値のままでOK（Value of Stars）
+              highlightCurrentTrack();
+              updateNowPlayingUI();
+            }
+          }
         // ❚❚ → ▶
         else {
           npToggle.textContent = "▶";
+          // 停止しても選択状態は維持（仕様どおり）
         }
       });
     }
@@ -2431,6 +2442,8 @@ function attachTrackUIEvents() {
 
     const idx = Number(row.dataset.index || "0");
     currentTrackIndex = idx;
+    hasTrackSelection = true;          // ここで「選択あり」にする
+
     highlightCurrentTrack();
     updateNowPlayingUI();
 
