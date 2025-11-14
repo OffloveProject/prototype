@@ -209,17 +209,19 @@
         <!-- Option（環境設定ガワ） -->
         <div id="option-modal" class="modal hidden">
           <div class="modal-card">
-            <h3 style="margin-top:0;">Option　(プロト版はガワのみ)</h3>
+            <h3 style="margin-top:0;">Option</h3>
             <div class="form">
-              <label>タイプ速度</label>
+              <label>テキストスピード</label>
               <select id="opt-type">
-                <option value="instant">おそい</option>
+                <option value="instant">即時</option>
                 <option value="normal" selected>ふつう</option>
-                <option value="slow">はやい</option>
+                <option value="slow">ゆっくり</option>
               </select>
-              <label>BGM音量</label><input type="range" min="0" max="5" value="3" disabled>
-              <label>ボイス音量</label><input type="range" min="0" max="5" value="3" disabled>
-              <label>SE音量</label><input type="range" min="0" max="5" value="3" disabled>
+              <label>BGM音量</label><input type="range" min="0" max="5" value="3">
+              <label>ボイス音量</label><input type="range" min="0" max="5" value="3">
+              <label>SE音量</label><input type="range" min="0" max="5" value="3">
+              <!-- 「<input type="range" min="0" max="5" value="3" disabled>」ならdisabledにできる -->
+              ※プロト版の音量スライダーはガワのみ
             </div>
             <div class="row" style="margin-top:12px;">
               <button class="btn btn-ghost" onclick="el('option-modal').classList.add('hidden')">戻る</button>
@@ -234,7 +236,7 @@
             <h3 style="margin-top:0;">Help</h3>
             <div class="list">
               <div class="list-item"><strong>◀️：</strong><span class="meta">前のシーンへ戻る</span></div>
-              <div class="list-item"><strong>画面タップ：</strong><span class="meta">次のシーンへ進む</span></div>
+              <div class="list-item"><strong>画面タップ、または「次へ」ボタン：</strong><span class="meta">次のシーンへ進む</span></div>
               <div class="list-item"><strong>⏩早送り：</strong><span class="meta">押している間はテキスト一括表示（プロト版ではガワのみ）</span></div>
               <div class="list-item"><strong>▶️AUTO：</strong><span class="meta">自動で進行</span></div>
             </div>
@@ -311,7 +313,7 @@
         <!-- Save -->
         <div id="save-modal" class="modal hidden">
           <div class="modal-card">
-            <h3 style="margin-top:0;">Save</h3>
+            <h3 style="margin-top:0;">Save</h3>セーブするスロットを選択してください。
 
               <div id="save-list" class="list"></div>
               <div class="row" style="margin-top:12px;">
@@ -323,7 +325,7 @@
         <!-- Load -->
         <div id="load-modal" class="modal hidden">
           <div class="modal-card">
-            <h3 style="margin-top:0;">Load</h3>
+            <h3 style="margin-top:0;">Load</h3>ロードするデータを選択してください。
 
             <div id="load-list" class="list"></div>
             <div class="row" style="margin-top:12px;">
@@ -352,8 +354,8 @@
         </a>
       </p>
       <hr/>
-      <p><strong>データの扱い：</strong>本デモはブラウザの <code>localStorage</code> のみを使用し、個人データをサーバに送信しません。</p>
-      <p class="subtitle">※Analytics等を導入する場合は、その旨と目的・取得項目・オプトアウト方法をここに明記</p>
+      <p><strong>データの扱い：</strong>本プロトタイプではブラウザの <code>localStorage</code> のみを使用し、個人データをサーバに送信しません。</p>
+      <p class="subtitle">※Analytics等を導入する場合は、その旨と目的・取得項目・オプトアウト方法をここに明記（現在は未導入）</p>
       <hr/>
       <p><a id="link-privacy" href="https://offstagelove.com/app/privacypolicy.html" target="_blank" rel="noopener">プライバシーポリシー</a></p>
       <p><a id="link-tos" href="https://offstagelove.com/app/termsofservice.html" target="_blank" rel="noopener">利用規約</a></p>
@@ -364,22 +366,72 @@
   </div>
 </div>
 
-<!-- 楽曲リスト -->
+<!-- 楽曲リスト↓↓↓ここから -->
 <div id="tracks-modal" class="modal hidden">
-  <div class="modal-card">
+  <div class="modal-card tracks-card">
     <h3 style="margin-top:0;">楽曲リスト</h3>
-    <div id="tracks-list" class="list"></div>
-    <div class="row" style="margin-top:12px;">
-      <button id="btn-tracks-close" class="btn">閉じる</button>
+
+    <!-- 上部：ジャケット風ヘッダー -->
+    <div class="tracks-header">
+      <div class="tracks-cover"></div>
+      <div class="tracks-meta">
+        <div class="tracks-title-main">Offstage Love – Original Tracks</div>
+        <div class="tracks-sub">※プロトタイプではガワのみ</div>
+      </div>
+    </div>
+
+    <!-- 波紋アニメ ＋ 曲番号（自動採番）↓↓↓ここから -->
+    <div class="tracks-player">
+      <div class="tracks-player-text">
+        <div id="np-title" class="np-title">Value of Stars</div>
+        <div id="np-artist" class="np-artist">CELEST</div>
+      </div>
+
+      <div class="tracks-player-seek">
+        <span class="np-time np-time-current">0:00</span>
+        <input id="np-seek" type="range" min="0" max="100" value="0">
+        <span class="np-time np-time-total">3:08</span>
+      </div>
+
+      <div class="tracks-player-controls">
+        <button id="np-prev"  class="np-btn" aria-label="前の曲へ">⏪</button>
+        <button id="np-toggle" class="np-btn np-btn-main" aria-label="再生／一時停止">❚❚</button>
+        <button id="np-next"  class="np-btn" aria-label="次の曲へ">⏩</button>
+
+        <div class="np-volume">
+          <span class="np-vol-icon">🔊</span>
+          <input id="np-volume" type="range" min="0" max="100" value="30">
+        </div>
+      </div>
+    </div>
+    <!-- 波紋アニメ ＋ 曲番号（自動採番）↑↑↑ここまで -->
+
+    <!-- メイン再生・再生モードボタン -->
+    <div class="tracks-main-controls">
+      <div class="trk-mode-buttons">
+
+        <!-- <button class="trk-mode-btn" data-mode="normal">▶ 再生</button> -->
+        <button class="trk-mode-btn" data-mode="shuffle">🔀Shuffle</button>
+        <button class="trk-mode-btn" data-mode="one">🔁Repeat One</button>
+        <button class="trk-mode-btn" data-mode="all">🔂Repeat All</button>
+      </div>
+    </div>
+
+    <!-- 楽曲リスト本体 -->
+    <div id="tracks-list" class="tracks-list"></div>
+
+    <div class="row" style="margin-top:16px;">
+      <button id="btn-tracks-close" class="btn" style="width:100%;">閉じる</button>
     </div>
   </div>
 </div>
+<!-- 楽曲リスト↑↑↑ここまで -->
 
 <!-- NFT -->
 <div id="nft-modal" class="modal hidden">
   <div class="modal-card">
     <h3 style="margin-top:0;">NFT</h3>
-    <p class="subtitle">※デモ版：概要のみ表示。リンクは後で差し替え可能。</p>
+    <p class="subtitle">※プロトタイプではガワのみ。<br>※本番用ではOpenSea連携で所有NFTを表示<br>（本アプリ内にはウォレット機能を搭載せず、閲覧のみ可能）</p>
     <div class="card" style="margin-top:8px;">
       <p><strong>コレクション：</strong><span id="nft-collection-name">Offstage Love – CELEST Cards</span></p>
       <p><strong>公開URL：</strong><a id="nft-link" style="pointer-events: none;" href="#" target="_blank" rel="noopener">準備中</a></p>
@@ -404,6 +456,19 @@
     <div class="subtitle">※本番ではこの選択は表示しません（確認用）</div>
   </div>
 </div>
+
+        <!-- 汎用確認モーダル（ネイティブダイアログ立ち上げ回避策）↓↓↓ここから -->
+        <div id="sys-confirm" class="modal hidden">
+          <div class="modal-card">
+            <p id="sys-confirm-message" style="margin-top:0;"></p>
+            <div class="row" style="margin-top:12px;">
+              <button id="sys-confirm-no"  class="btn btn-ghost">キャンセル</button>
+              <button id="sys-confirm-yes" class="btn">はい</button>
+            </div>
+          </div>
+        </div>
+        <!-- 汎用確認モーダル（ネイティブダイアログ立ち上げ回避策）↑↑↑ここまで -->
+
 
 <script>
 
@@ -440,6 +505,37 @@ let loadInvokeFrom = "ingame"; //ゲームプレイ中とメインメニュー�
 const SAVE_KEY = "offlove_save_v1";
 const PROFILE_KEY = "offlove_profile_v1"; // 主人公の名前保存
 const el = (id) => document.getElementById(id);
+
+// 汎用確認モーダル↓↓↓ここから
+function showConfirm(message, onYes, onNo) {
+  const modal = el("sys-confirm");
+  const msgEl = el("sys-confirm-message");
+  const yesBtn = el("sys-confirm-yes");
+  const noBtn  = el("sys-confirm-no");
+
+  msgEl.textContent = message;
+  modal.classList.remove("hidden");
+
+  const cleanup = () => {
+    modal.classList.add("hidden");
+    yesBtn.removeEventListener("click", handleYes);
+    noBtn.removeEventListener("click", handleNo);
+  };
+
+  function handleYes() {
+    cleanup();
+    if (onYes) onYes();
+  }
+  function handleNo() {
+    cleanup();
+    if (onNo) onNo();
+  }
+
+  yesBtn.addEventListener("click", handleYes);
+  noBtn.addEventListener("click", handleNo);
+}
+// 汎用確認モーダル↑↑↑ここまで
+
 const pages = {
   title: el("page-title"),
   settings: el("page-settings"),
@@ -854,10 +950,10 @@ function renderStatus(){
         <strong>■主人公のステータス</strong>
         <div class="meta">（プロト版ではガワのみ）</div>
         <div class="list" style="margin-top:6px;">
-          <div class="list-item"><strong>LV　3</strong><div class="meta">【Level】XPが基準値に達すると上昇する「職務スキル」の尺度</div></div>
-          <div class="list-item"><strong>XP　200</strong><div class="meta">【Experience Points】仕事に関わる経験を積むことで獲得できる</div></div>
+          <div class="list-item"><strong>LV　3</strong><div class="meta">【Level】XPが基準値に達すると上昇する職務スキル</div></div>
+          <div class="list-item"><strong>XP　200</strong><div class="meta">【Experience Points】仕事に関わる経験を積むと獲得</div></div>
           <div class="list-item"><strong>ST　10</strong><div class="meta">【Stamina】休日の活動内容に応じて消費</div></div>
-          <div class="list-item"><strong>FT　0</strong><div class="meta">【Fatigue】休日の活動内容に応じて蓄積</div></div>
+          <div class="list-item"><strong>FT　0</strong><div class="meta">【Fatigue】XPの獲得速度に応じて蓄積</div></div>
         </div>
       </div>
     `);
@@ -923,20 +1019,29 @@ function hasManualSlot(slot){
 }
 //保存有無の判定ヘルパ↑↑↑ここまで
 
-function loadFromSlot(slot){
-  const raw = localStorage.getItem(SLOT_PREFIX+slot);
-  if(!raw) return false;
-  try{
-    const s = JSON.parse(raw);
-    // 必要最低限を復元
-    Object.assign(state, s.state||{});
-    Object.assign(profile, s.profile||profile);
-    Object.assign(settings, s.settings||settings);
-    saveProfile(); saveSettings(); // 永続化
-    showPage("scene"); setBG(); renderCurrent();
-    return true;
-  }catch{ return false; }
+//JSON がおかしい等の本当のバグはコンソールエラーとしてそのまま見えるようにするための処理↓↓↓ここから
+function loadFromSlot(slot) {
+  const raw = localStorage.getItem(SLOT_PREFIX + slot);
+  if (!raw) {
+    // セーブデータが存在しない → ロード失敗
+    return false;
+  }
+
+  const s = JSON.parse(raw);
+
+  // 必要最低限を復元（ここでは画面描画（showPage("scene"); setBG(); renderCurrent();）はしない）
+  Object.assign(state,    s.state    || {});
+  Object.assign(profile,  s.profile  || profile);
+  Object.assign(settings, s.settings || settings);
+
+  // プロフィール・設定は永続化
+  saveProfile();
+  saveSettings();
+
+  // ここまで来ればロード成功
+  return true;
 }
+//JSON がおかしい等の本当のバグはコンソールエラーとしてそのまま見えるようにするための処理↑↑↑ここまで
 
 function slotLabel(slot){
   const raw = localStorage.getItem(SLOT_PREFIX+slot);
@@ -1029,24 +1134,30 @@ function renderSaveList(){
     div.addEventListener("click", (e) => {
       // 削除ボタンのクリックは拾わない
       if (e.target.closest("button[data-del]")) return;
-      if (confirm(`スロット No.${i} にセーブしますか？\nNo / Yes`)) {
-        const payload = { savedAt: Date.now(), state:{}, profile, settings };
-        localStorage.setItem(SLOT_PREFIX+i, JSON.stringify(payload));
-        renderSaveList();
-        updateContinueButton(); // ← Save リストの保存直後にContinueボタンのアクティブ/非アクティブ更新
-      }
-    });
+        showConfirm(
+          `スロット No.${i} にセーブしますか？`,
+          () => {
+          const payload = { savedAt: Date.now(), state:{}, profile, settings };
+          localStorage.setItem(SLOT_PREFIX+i, JSON.stringify(payload));
+          renderSaveList();
+          updateContinueButton(); // ← Save リストの保存直後にContinueボタンのアクティブ/非アクティブ更新
+        }
+      );
+  });
 
     // 削除ボタン
     const delBtn = div.querySelector('button[data-del]');
     if (delBtn) {
       delBtn.addEventListener("click", (e)=>{
         e.stopPropagation();
-        if (confirm(`スロット No.${i} のセーブデータを削除しますか？\n戻る / 削除`)) {
-          localStorage.removeItem(SLOT_PREFIX+i);
-          renderSaveList();
-          updateContinueButton(); // ← Save リストの削除直後にContinueボタンのアクティブ/非アクティブ更新
-        }
+          showConfirm(
+            `スロット No.${i} のセーブデータを削除しますか？`,
+              () => {
+              localStorage.removeItem(SLOT_PREFIX+i);
+            renderSaveList();
+            updateContinueButton(); // ← Save リストの削除直後にContinueボタンのアクティブ/非アクティブ更新
+          }
+        )
       });
     }
   }
@@ -1098,34 +1209,55 @@ function renderLoadList(){
   // ラベル番号：手動は通し（01〜40）、AUTOページ 41〜50
   const labelNo = isAutoPage ? (40 + i - start) : i;
 
+  // メタ表示用テキスト
+  const metaText = isAuto
+    ? "（AUTO枠：プロトタイプではロード操作不可／見た目のみ）"
+    : (has ? "クリックでロード" : "セーブデータなし");
+
   const div = document.createElement("div");
   div.className = "list-item";
+  if (!has && !isAuto) {
+    // 手動ページの空スロットは「無効」扱いにする
+    div.classList.add("slot-empty");
+  }
+
   div.innerHTML = `
     <div class="row" style="align-items:center; gap:8px;">
       <div style="flex:1;">
         <strong>${slotLabelBy(mode, labelNo)}</strong>
-        <div class="meta">${isAuto ? "（AUTO枠：プロトタイプではロード操作不可／見た目のみ）" : "クリックでロード"}</div>
+        <div class="meta">${metaText}</div>
       </div>
       ${(!isAuto && has) ? `<button class="btn-del" data-del="${slotNo}">削除</button>` : ""}
     </div>
   `;
 
 // クリックでロード（手動ページのみ）
-if (!isAutoPage) {
+  if (!isAutoPage && has) {
     div.addEventListener("click", (e)=>{
       if (e.target.closest("button[data-del]")) return; // 削除ボタンは除外
 
        const msg = (loadInvokeFrom === "title")
-      ? `スロット No.${slotNo} をロードしますか？\nNo / Yes`
-      : `スロット No.${slotNo} をロードしますか？\n※現在の進行状況は失われます。\nNo / Yes`;
+      ? `スロット No.${slotNo} をロードしますか？`
+      : `スロット No.${slotNo} をロードしますか？\n※現在の進行状況は失われます。`;
 
-    if (confirm(msg)) {
-      const ok = loadFromSlot(slotNo);
-      el("load-modal").classList.add("hidden");
-      loadInvokeFrom = "ingame"; // ★ リセット（次回のため）
-      if (ok) { showPage("scene"); setBG(); renderCurrent(); }
-      else { alert("ロードに失敗しました。"); }  
-    }
+        showConfirm(
+          msg, () => {
+            const ok = loadFromSlot(slotNo);
+            el("load-modal").classList.add("hidden");
+            loadInvokeFrom = "ingame"; // ★ リセット（次回のため）
+            if (ok) {
+              showPage("scene");
+              setBG();
+              renderCurrent();
+            } else {
+              // ここもネイティブ alert を避けたいなら別モーダル化する
+              alert("ロードに失敗しました。");
+              }  
+            },
+          () => {   // No（キャンセル）のとき
+            // 何もしない（必要ならここに処理を書く）
+          }
+      );
 
     });
 
@@ -1134,11 +1266,14 @@ if (!isAutoPage) {
     if (delBtn) {
       delBtn.addEventListener("click", (e)=>{
         e.stopPropagation();
-        if (confirm(`スロット No.${slotNo} のセーブデータを削除しますか？\n戻る / 削除`)) {
-          localStorage.removeItem(SLOT_PREFIX+slotNo);
-          renderLoadList();
-          updateContinueButton(); // ← Load リストの保存直後にContinueボタンのアクティブ/非アクティブ更新
-        }
+          showConfirm(
+            `スロット No.${slotNo} のセーブデータを削除しますか？`,
+            () => {
+            localStorage.removeItem(SLOT_PREFIX+slotNo);
+            renderLoadList();
+            updateContinueButton(); // ← Load リストの保存直後にContinueボタンのアクティブ/非アクティブ更新
+          }
+        );
       });
     }
   }
@@ -2131,28 +2266,193 @@ el("app-version").textContent = `Version: ${APP_VERSION}`;
 
 // ===== 楽曲リスト（プレースホルダ） =====
 const TRACKS = [
-  { id:"op_theme", title:"Value of Stars", unit:"CELEST", length:"1:32" },
-  { id:"hr_ballad", title:"君の呼吸", unit:"神谷 陽翔", length:"1:15" },
-  { id:"ts_midtempo", title:"余白に可", unit:"九条 司", length:"1:08" }
+  { id:"op_theme", title:"Value of Stars", unit:"CELEST", length:"3:08" },
+  { id:"hr_ballad", title:"君の呼吸", unit:"神谷 陽翔", length:"3:15" },
+  { id:"ts_midtempo", title:"余白", unit:"九条 司", length:"2:58" }
 ];
 // 必要になったら previewUrl を assets/audio/*.mp3 で足せます：{ previewUrl:"assets/audio/op_theme.mp3" }
 
-function renderTracks() {
-  const box = el("tracks-list");
-  box.innerHTML = "";
-  TRACKS.forEach(t => {
-    const div = document.createElement("div");
-    div.className = "list-item";
-    div.innerHTML = `
-      <div><strong>${t.title}</strong></div>
-      <div class="meta">${t.unit} ／ ${t.length}</div>
-    `;
-    box.appendChild(div);
+let currentTrackIndex = 0;      // 仮想的な「再生中の曲」
+let currentPlayMode   = "normal"; // "normal" | "shuffle" | "one" | "all"
+
+//現在再生中の曲情報を更新↓↓↓ここから
+function updateNowPlayingUI() {
+  const t = TRACKS[currentTrackIndex];
+  if (!t) return;
+
+  el("np-title").textContent  = t.title;
+  el("np-artist").textContent = t.unit;
+
+  const parts = (t.length || "0:00").split(":");
+  const totalSec =
+    Number(parts[0] || 0) * 60 +
+    Number(parts[1] || 0);
+
+  el("np-time-current").textContent = "0:00";
+  el("np-time-total").textContent   = t.length || "0:00";
+
+  const seek = el("np-seek");
+  seek.value = 0;
+  seek.min   = 0;
+  seek.max   = totalSec;
+
+}
+//現在再生中の曲情報を更新↑↑↑ここまで
+
+//楽曲リスト描画関数↓↓↓ここから
+function highlightCurrentTrack() {
+  const rows = document.querySelectorAll(".track-row");
+
+  rows.forEach((row, i) => {
+    row.classList.toggle("is-active", i === currentTrackIndex);
+
+    // ▶ ボタンの光り方
+    const btn = row.querySelector(".track-play-btn");
+    btn.classList.toggle("is-playing", i === currentTrackIndex);
+
+    // 波紋アニメの対象
+    const wave = row.querySelector(".track-wave");
+
+    if (i === currentTrackIndex) {
+      wave.classList.add("show");
+      wave.classList.add("pulsing");
+    } else {
+      wave.classList.remove("show");
+      wave.classList.remove("pulsing");
+    }
   });
 }
 
+
+function renderTracks() {
+
+  const box = el("tracks-list");
+  if (!box) return;
+  box.innerHTML = "";
+
+  TRACKS.forEach((t, index) => {
+    const row = document.createElement("div");
+    row.className = "track-row";
+    row.dataset.index = String(index);
+
+    // 表示用タイトルから先頭の ▶️ を削る
+    const cleanTitle = t.title.replace(/^▶️\s*/, ""); //消したら動かないので残す
+
+    row.innerHTML = `
+      <div class="track-number">${index + 1}</div>
+      <div class="track-wave"></div>
+
+      <button class="track-play-btn" data-index="${index}"
+              aria-label="${cleanTitle} を再生">
+        <span class="icon">▶</span>
+      </button>
+
+      <div class="track-info">
+        <div class="track-title">${cleanTitle}</div>
+        <div class="track-meta">${t.unit} ／ ${t.length}</div>
+      </div>
+    `;
+
+    row.querySelector(".track-number").textContent = index + 1;
+
+    box.appendChild(row);
+  });
+
+  highlightCurrentTrack();
+}
+//楽曲リスト描画関数↑↑↑ここまで
+
+//再生ボタン・モードボタンのイベント↓↓↓ここから
+function flashPlayButton(btn) {
+  if (!btn) return;
+  btn.classList.remove("is-playing");
+  // 再付与のための reflow
+  void btn.offsetWidth;
+  btn.classList.add("is-playing");
+  setTimeout(() => btn.classList.remove("is-playing"), 260);
+}
+
+function attachTrackUIEvents() {
+  const modal = el("tracks-modal");
+  if (!modal) return;
+
+
+
+    // 再生／一時停止ボタンのトグル↓↓↓ここから
+    const npToggle = el("np-toggle");
+    if (npToggle) {
+      // 初期状態を ▶ に強制
+      npToggle.textContent = "▶";
+
+      npToggle.addEventListener("click", () => {
+        const now = npToggle.textContent.trim();
+
+        // ▶ → ❚❚
+        if (now === "▶") {
+          npToggle.textContent = "❚❚";
+        }
+        // ❚❚ → ▶
+        else {
+          npToggle.textContent = "▶";
+        }
+      });
+    }
+    // 再生／一時停止ボタンのトグル↑↑↑ここまで
+
+    // 再生モード切替（トグル式）※shuffle／loop の ON/OFF トグル（再クリックで OFF）※↓↓↓ここから
+    document.querySelectorAll(".trk-mode-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+
+        const mode = btn.dataset.mode;
+
+        // すでに active → OFF（解除）
+        if (btn.classList.contains("is-active")) {
+          btn.classList.remove("is-active");
+          currentPlayMode = "normal";   // default 状態へ戻す
+          return;
+        }
+
+        // OFF のものを ON にする
+        currentPlayMode = mode;
+
+        // 他のボタンは OFF
+        document.querySelectorAll(".trk-mode-btn").forEach(b =>
+          b.classList.toggle("is-active", b === btn)
+        );
+      });
+    });
+    // 再生モード切替（トグル式）↑↑↑ここまで
+
+  // 各曲の「▶」ボタン（イベント委譲）
+  modal.addEventListener("click", (e) => {
+    // 行全体をクリックしてもOK
+    const row = e.target.closest(".track-row");
+    if (!row) return;
+
+    const idx = Number(row.dataset.index || "0");
+    currentTrackIndex = idx;
+    highlightCurrentTrack();
+    updateNowPlayingUI();
+
+    // 演出用：左の ▶ ボタンだけを光らせる
+    const playBtn = row.querySelector(".track-play-btn");
+    flashPlayButton(playBtn);
+
+    // 実際の音声再生は未実装（ガワのみ）
+  });
+
+}
+//再生ボタン・モードボタンのイベント↑↑↑ここまで
+
 // イベント
-el("btn-tracks").addEventListener("click", () => { renderTracks(); el("tracks-modal").classList.remove("hidden"); });
+el("btn-tracks").addEventListener("click", () => {
+  renderTracks();
+  el("tracks-modal").classList.remove("hidden");
+});
+el("btn-tracks-close").addEventListener("click", () => el("tracks-modal").classList.add("hidden"));
+// 初期化（DOM構築後に1回だけ）
+attachTrackUIEvents();
+
 el("btn-tracks-close").addEventListener("click", () => el("tracks-modal").classList.add("hidden"));
 
 // ===== NFT（プレースホルダ） =====
@@ -2396,6 +2696,103 @@ el("btn-start-cancel").addEventListener("click", () => {
 })();
 // ===== Romantic Buttons attach ↑↑↑ここまで=====
 
+
+// ==== NP SEEK & VOLUME SLIDER FILL ↓↓↓ここから====
+//注意：この制御はattachTrackUIEvents();より後に置く必要がある
+
+// ======================
+// ★ ここから：共通関数 + 初期描画 + イベント
+// ======================
+
+// 共通：スライダーの色付け
+function updateSeekFill(elm) {
+  if (!elm) return;
+  const pct = (elm.value / elm.max * 100) || 0;
+  elm.style.setProperty("--seek-fill", pct + "%");
+}
+
+// 初期描画（HTML 読み込み後）
+document.addEventListener("DOMContentLoaded", () => {
+  const seek  = document.getElementById("np-seek");
+  const vol   = document.getElementById("np-volume");
+  updateSeekFill(seek);
+  updateSeekFill(vol);
+});
+
+// 再生位置スライダー
+const npSeek = document.getElementById("np-seek");
+if (npSeek) {
+  npSeek.addEventListener("input", () => {
+    updateSeekFill(npSeek);
+  });
+}
+
+// 音量スライダー
+const npVol = document.getElementById("np-volume");
+if (npVol) {
+  npVol.addEventListener("input", () => {
+    updateSeekFill(npVol);
+  });
+}
+
+// ==== NP SEEK & VOLUME SLIDER FILL ↑↑↑ここまで====
+
+// ==========================
+// ★ 音量ミュートの制御　↓↓↓ここから
+// ==========================
+
+// 前回の音量を保存するための変数
+let lastVolume = 70;  // 初期値は適当に。30でも良い。
+
+const volIcon = document.querySelector(".np-vol-icon");
+const volSlider = document.getElementById("np-volume");
+
+// アイコンクリックでミュート／解除
+if (volIcon && volSlider) {
+  volIcon.addEventListener("click", () => {
+
+    const isMuted = volIcon.dataset.muted === "true";
+
+    if (!isMuted) {
+      // ---- ミュートにする ----
+      lastVolume = Number(volSlider.value);  // 現在の値を保存
+      volSlider.value = 0;                  // スライダーを0に
+      updateSeekFill(volSlider);            // 色も更新
+
+      volIcon.textContent = "🔇";           // ミュートアイコンへ
+      volIcon.dataset.muted = "true";
+    } else {
+      // ---- ミュート解除 ----
+      volSlider.value = lastVolume;         // 前の値を復元
+      updateSeekFill(volSlider);            // 色も更新
+
+      volIcon.textContent = "🔊";           // 元のアイコンへ
+      volIcon.dataset.muted = "false";
+    }
+  });
+}
+
+// スライダーが動いたらアイコンも同期させる（0なら自動的にミュート）
+if (volSlider && volIcon) {
+  volSlider.addEventListener("input", () => {
+    const v = Number(volSlider.value);
+
+    updateSeekFill(volSlider);  // 色更新
+
+    if (v === 0) {
+      volIcon.textContent = "🔇";
+      volIcon.dataset.muted = "true";
+    } else {
+      volIcon.textContent = "🔊";
+      volIcon.dataset.muted = "false";
+      lastVolume = v;  // ボリュームを覚えておく
+    }
+  });
+}
+
+// ==========================
+// ★ 音量ミュートの制御　↑↑↑ここまで
+// ==========================
 </script>
 
       <footer style="text-align: center;">

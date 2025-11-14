@@ -34,6 +34,42 @@ body.modal-open .modal * {
   --sky:#C8E4FF;            /* 淡い水色 */
 }
 
+/* ===== Offstage Love 共通スクロールバー =====↓↓↓ここから ※動作しないので要確認 */
+
+/* 色だけ変えるFirefox用（細いピンク系バー） */
+/* ===== Firefox 専用 ===== */
+@supports not selector(::-webkit-scrollbar) {
+  .app * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(240,145,153,0.9) rgba(8,8,16,0.9);
+  }
+}
+
+/* ===== Chrome / Edge / Safari 共通 ===== */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background:
+    radial-gradient(circle at 30% 0%, rgba(255,255,255,0.18) 0, transparent 40%),
+    radial-gradient(circle at 70% 100%, rgba(200,228,255,0.25) 0, transparent 55%),
+    #05050b;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #F7A7B0 0%, #F09199 35%, #C8E4FF 100%);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.35),
+    0 0 8px rgba(240,145,153,0.65),
+    0 0 14px rgba(200,228,255,0.55);
+}
+
+/* ===== Offstage Love 共通スクロールバー =====↑↑↑ここまで */
+
+
 /* 立ち絵画像が未設定 or src="" のときは完全に非表示 （スマホのブラウザ用） */
 #char-img:not([src]),
 #char-img[src=""] {
@@ -572,6 +608,453 @@ body.modal-open .modal * {
   margin-top: 4px;
 }
 
+
+/* Musicsデザイン用↓↓↓ここから */
+/* ===== Musics modal ===== */
+
+/*波紋アニメ ↓↓↓ここから*/
+
+.track-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(10,10,18,0.7);
+  margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+}
+
+.track-number {
+  width: 20px;
+  text-align: right;
+  font-size: 12px;
+  margin-right: 10px;
+  opacity: 0.65;
+}
+
+.track-wave {
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, #ffbde3 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: 0.25s;
+}
+
+.track-wave.show {
+  opacity: 1;
+  animation: wave-pulse 1.2s infinite ease-in-out;
+}
+
+
+
+.track-row.is-active .track-wave {
+  animation: wave 1.8s ease-out infinite;
+}
+
+.track-wave.pulsing {
+  animation: wave-pulse 1.2s infinite ease-in-out;
+}
+
+
+@keyframes wave { /*拡がる波紋*/
+  0%   { transform: translateY(-50%) scale(0.8); opacity: 0.65; background: rgba(255,200,215,0.45); }
+  70%  { transform: translateY(-50%) scale(2.0); opacity: 0; }
+  100% { transform: translateY(-50%) scale(2.4); opacity: 0; }
+}
+@keyframes wave-pulse { /*再生中の鼓動アニメ*/
+  0%   { transform: scale(0.6); opacity: 0.8; }
+  50%  { transform: scale(1.1); opacity: 0.4; }
+  100% { transform: scale(0.6); opacity: 0.8; }
+}
+
+/*波紋アニメ ↑↑↑ここまで*/
+
+/* ==== Musics：現在再生中エリア ====↓↓↓ここから */
+
+
+.tracks-player {
+  margin: 8px 0 14px;
+  padding: 12px 12px 14px;
+  border-radius: 16px;
+  background: rgba(16, 14, 26, 0.78);          /* 夜空っぽい濃紺 */
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+}
+
+.tracks-player-text {
+  margin-bottom: 6px;
+}
+
+.np-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.np-artist {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* 再生位置バー周り */
+
+.tracks-player-seek {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 10px;
+}
+
+.np-time {
+  font-size: 10px;
+  opacity: 0.7;
+  min-width: 32px;
+  text-align: center;
+}
+
+#np-seek {
+  flex: 1;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+}
+
+/* スライダーつまみ（再生位置） */
+#np-seek::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f6d0d4;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.4);
+}
+#np-seek::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f6d0d4;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.4);
+}
+
+/* 共通: range のトラック基本スタイル（ベース色だけ）↓↓↓ここから */
+#np-seek,
+#np-volume {
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18); /* JS で上書きされるベース */
+  outline: none;
+}
+/* 既存の thumb 設定はそのまま流用 */
+
+#np-seek::-webkit-slider-runnable-track,
+#np-volume::-webkit-slider-runnable-track {
+  background: linear-gradient(
+      90deg,
+      var(--pink) var(--seek-fill),
+      rgba(255,255,255,0.18) var(--seek-fill)
+  );
+}
+
+#np-seek,
+#np-volume {
+  --seek-fill: 0%;
+}
+/* 共通: range のトラック基本スタイル（ベース色だけ）↑↑↑ここまで */
+
+/* コントロールボタン＋音量 */
+
+.tracks-player-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.np-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+/* ホバー（PC用） */
+.np-btn:hover {
+  filter: brightness(1.08);
+}
+
+.np-btn-main {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  font-size: 26px;
+  color: #988f8f;
+  background:
+    radial-gradient(circle at 30% 0%, #ffffff 0, rgba(255,255,255,0) 50%),
+    linear-gradient(135deg, #f09191, #f6b7b5);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.3),
+    0 8px 18px rgba(0,0,0,0.6);
+}
+
+.np-btn-main:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.4),
+    0 10px 22px rgba(0,0,0,0.7);
+}
+.np-btn-main:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.2),
+    0 4px 12px rgba(0,0,0,0.6);
+}
+
+/* 音量スライダー */
+
+.np-volume {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex: 1;
+}
+
+.np-vol-icon {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+#np-volume {
+  flex: 1;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  outline: none;
+}
+
+#np-volume::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+#np-volume::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+/* ==== Musics：現在再生中エリア ====↑↑↑ここまで */
+.tracks-card {
+  padding: 16px 16px 20px;
+  backdrop-filter: blur(16px);
+}
+
+.tracks-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0 12px;
+}
+
+.tracks-cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 20% 0%, #fff 0, rgba(255,255,255,0) 55%),
+    radial-gradient(circle at 80% 100%, #f09199 0, rgba(240,145,153,0) 60%),
+    linear-gradient(135deg, #151820, #2a2335);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+  position: relative;
+}
+.tracks-cover::after {
+  content: "OL";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.88);
+}
+
+.tracks-meta {
+  flex: 1;
+  min-width: 0;
+}
+.tracks-title-main {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.tracks-sub {
+  font-size: 11px;
+  opacity: 0.72;
+  margin-top: 2px;
+}
+
+.tracks-main-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.trk-main-btn {
+  flex: 0 0 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  line-height: 1;
+  color: #fff;
+  background:
+    radial-gradient(circle at 30% 0%, #fff 0, rgba(255,255,255,0) 50%),
+    linear-gradient(135deg, #f09199, #f6b7b5);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.3),
+    0 8px 18px rgba(0,0,0,0.6);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.trk-main-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.4),
+    0 10px 22px rgba(0,0,0,0.7);
+}
+.trk-main-btn:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.2),
+    0 4px 12px rgba(0,0,0,0.6);
+}
+
+.trk-mode-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+}
+.trk-mode-btn {
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  line-height: 1.3;
+  cursor: pointer;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  background: rgba(30, 30, 45, 0.55);  /* 夜空系・濃紺寄りの半透明 */
+  border: 1px solid rgba(180, 180, 220, 0.25); /* 星の光っぽい淡いブルー系 */
+  color: #dfe7ff; /* 淡い星光ブルー */
+}
+/* Hover：星がふっと明るくなる */
+.trk-mode-btn:hover {
+  background: rgba(45, 45, 70, 0.7);
+  border-color: rgba(220, 220, 255, 0.45);
+  color: #ffffff;
+}
+
+.trk-mode-btn.is-active {
+  background: linear-gradient(135deg, #F09199, #ffe2c4);
+  border-color: rgba(255,255,255,0.7);
+  color: #222;
+  box-shadow: 0 0 10px rgba(240,145,153,0.45),
+              0 0 16px rgba(200,228,255,0.35);
+}
+
+/* 楽曲リスト */
+.tracks-list {
+  margin-top: 6px;
+  max-height: 38vh;
+  overflow-y: auto;
+}
+
+.track-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+  background: rgba(6, 8, 14, 0.8);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+}
+.track-row.is-active {
+  background:
+    linear-gradient(135deg, rgba(240,145,153,0.26), rgba(255,255,255,0.04));
+  border-color: rgba(240,145,153,0.9);
+}
+
+.track-play-btn {
+  flex: 0 0 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  color: #fff;
+  background: radial-gradient(circle at 30% 0%, #fff 0, transparent 55%),
+              linear-gradient(135deg, #f09199, #f6b7b5);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.4);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+}
+.track-play-btn.is-playing {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+  filter: brightness(1.12);
+}
+
+.track-info {
+  flex: 1;
+  min-width: 0;
+}
+.track-title {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.track-meta {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: 1px;
+}
+
+/* Musicsデザイン用↑↑↑ここまで */
+
 /* NFTリンク専用スタイル */
 #nft-link {
   display: inline-block;
@@ -1005,6 +1488,9 @@ textarea{width:100%;height:120px;border-radius:10px;border:1px solid #2c2c2c;bac
 .theme-light .subtitle{ color:#444; opacity:.9 }
 
 /* modal - About&Legalメニュー ↓↓↓ここから*/
+#about-modal .modal-body {
+  padding-bottom: 24px; /*About モーダルだけ、閉じるボタンの下に余白（スクロールバー出現対策）*/
+}
 /* About & Legal：リンクの視認性UP（チップ風）↓↓↓ここから */
 #about-modal .modal-card a{
   display: inline-flex;
@@ -1071,6 +1557,25 @@ textarea{width:100%;height:120px;border-radius:10px;border:1px solid #2c2c2c;bac
   justify-content:center;
   z-index:999;
 }
+
+/* 汎用確認モーダルを最前面に↓↓↓ここから */
+#sys-confirm {
+  z-index: 2000 !important;   /* 既存モーダル(999)より前面へ */
+}
+
+/* その内側カードも確実に前面へ */
+#sys-confirm .modal-card {
+  position: relative;
+  z-index: 2001;
+}
+/* 汎用確認モーダルを最前面に↑↑↑ここまで */
+
+/* 汎用確認モーダル内の改行を有効に↓↓↓ここから */
+#sys-confirm-message {
+  white-space: pre-line;
+}
+/* 汎用確認モーダル内の改行を有効に↑↑↑ここまで */
+
 .modal-card{
   /* 画面幅とアプリ幅の小さい方に収める */
   width: min(92vw, var(--app-max));
@@ -1123,6 +1628,17 @@ textarea{width:100%;height:120px;border-radius:10px;border:1px solid #2c2c2c;bac
   padding-right: 6px;   /* スクロールバーと文字の余白 */
   max-height: calc(92svh - 90px);  /* 本文エリアも同じ基準に合わせる */
 }
+
+/* Load の空スロットを無効表示にする↓↓↓ここから */
+.list-item.slot-empty {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none; /* クリック不可 */
+}
+.list-item.slot-empty .meta {
+  color: #777;
+}
+/* Load の空スロットを無効表示にする↑↑↑ここまで */
 
 /* === Heart Meter (Status/HT) ===↓↓↓ここから */
 .ht-wrap{ position: relative; }
@@ -1216,6 +1732,12 @@ textarea{width:100%;height:120px;border-radius:10px;border:1px solid #2c2c2c;bac
 .list-item{display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:10px;border:1px solid #2c2c2c;background:#161616}
 .theme-light .list-item{background:#fafafa;border-color:#e5e5e5}
 .list-item .meta{font-size:12px;opacity:.8}
+
+/*メインメニューモーダルのタイトルボタン下部に余白（スクロールバー出現対策）↓↓↓ここから*/
+#mainmenu-modal #mnu-title {
+  margin-bottom: 12px;   /* 好きな値に調整（8〜12pxくらい） */
+}
+/*メインメニューモーダルのタイトルボタン下部に余白（スクロールバー出現対策）↑↑↑ここまで*/
 
 /* 次へボタン↓↓↓ここから：右下横長＋ピンク枠＆グロー */
 #btn-next {
@@ -1463,4 +1985,6 @@ textarea{width:100%;height:120px;border-radius:10px;border:1px solid #2c2c2c;bac
 }
 
 /* ===== ステータス画面　キャラ別♥カラー設定 =====↑↑↑ここまで */
+
+
 
