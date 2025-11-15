@@ -2748,12 +2748,30 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 再生位置スライダー
+// 秒数 → "m:ss" 文字列に変換するヘルパー↓↓↓ここから
+function formatTime(sec) {
+  sec = Math.max(0, Math.floor(Number(sec) || 0)); // 数値＆整数に揃える
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return m + ":" + String(s).padStart(2, "0");
+}
+
+// 再生位置スライダー
 const npSeek = document.getElementById("np-seek");
 if (npSeek) {
+  const npTimeCurrent = document.getElementById("np-time-current"); // 左側ラベル
+
   npSeek.addEventListener("input", () => {
+    // ピンクの塗り部分
     updateSeekFill(npSeek);
+
+    // スライダー位置に応じて 0:00 → m:ss を更新
+    if (npTimeCurrent) {
+      npTimeCurrent.textContent = formatTime(npSeek.value);
+    }
   });
 }
+// 秒数 → "m:ss" 文字列に変換するヘルパー↑↑↑ここまで
 
 // 音量スライダー
 const npVol = document.getElementById("np-volume");
