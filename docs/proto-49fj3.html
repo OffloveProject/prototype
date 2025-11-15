@@ -1693,6 +1693,16 @@ confirmBtn?.addEventListener("click", ()=>{
   // ログ（選んだ選択肢のID）
   state.log.push(opt.id || "");
 
+  // Backlog 用に「選んだ選択肢の文言」を履歴へ積む↓↓↓
+  if (opt.label) {
+    state.history.push({
+      type: "choice",
+      txt: opt.label
+      // 必要なら id も残す: id: opt.id || null
+    });
+  }
+  // Backlog 用に「選んだ選択肢の文言」を履歴へ積む↑↑↑
+
   // ===== 従来「選択直後にやっていた処理」をここで実行 =====
   if (opt.effects) {
     // 効果を適用
@@ -2205,10 +2215,14 @@ function renderLog() {
       const speaker = speakerLabelForLog(h);
       const body    = resolveInlineVars(h.txt);     // ここで {MC} を最新名に展開
       div.innerHTML = `<div><strong>${speaker}</strong></div><div class="meta">${body}</div>`;
-    } else { // narrate
-      const body = resolveInlineVars(h.txt);
-      div.innerHTML = `<div class="meta">— ${body}</div>`;
-    }
+      } else if (h.type === "choice") {
+      // ★追加：選択肢行をそのまま表示（先頭に▶など付けてもよい）
+        const body = resolveInlineVars(h.txt);
+        div.innerHTML = `<div class="meta">▶ ${body}</div>`;
+      } else { // narrate
+        const body = resolveInlineVars(h.txt);
+        div.innerHTML = `<div class="meta">— ${body}</div>`;
+      }
     box.appendChild(div);
   });
 }
