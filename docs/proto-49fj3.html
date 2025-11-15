@@ -388,9 +388,9 @@
       </div>
 
       <div class="tracks-player-seek">
-        <span class="np-time np-time-current">0:00</span>
+        <span id="np-time-current" class="np-time np-time-current">0:00</span>
         <input id="np-seek" type="range" min="0" max="100" value="0">
-        <span class="np-time np-time-total">3:08</span>
+        <span id="np-time-total" class="np-time np-time-total">3:08</span>
       </div>
 
       <div class="tracks-player-controls">
@@ -2293,9 +2293,10 @@ function updateNowPlayingUI() {
   el("np-time-total").textContent   = t.length || "0:00";
 
   const seek = el("np-seek");
-  seek.value = 0;
   seek.min   = 0;
   seek.max   = totalSec;
+  seek.value = 0;
+  updateSeekFill(seek);   // ←追加（色のリセット）
 
 }
 //現在再生中の曲情報を更新↑↑↑ここまで

@@ -1613,7 +1613,8 @@ textarea{width:100%;height:120px;border-radius:10px;border:1px solid #2c2c2c;bac
 /* Save / Load / Status のモーダルを画面内に収める */
 #status-modal .modal-card,
 #save-modal .modal-card,
-#load-modal .modal-card {
+#load-modal .modal-card,
+#tracks-modal .modal-card {
   max-height: 96svh;     /* 画面の8割までに制限したいなら80vh */
   overflow: hidden;     /* 中身はスクロールで処理 */
   display: flex;
@@ -1622,7 +1623,8 @@ textarea{width:100%;height:120px;border-radius:10px;border:1px solid #2c2c2c;bac
 
 #status-body,
 #save-list,
-#load-list {
+#load-list,
+#tracks-list {
   flex: 1;
   overflow-y: auto;     /* 中身が溢れたら縦スクロール */
   padding-right: 6px;   /* スクロールバーと文字の余白 */
